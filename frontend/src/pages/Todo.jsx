@@ -5,6 +5,7 @@ import { TodoList } from "../components/TodoList";
 import axios from "axios";
 
 function Todo() {
+  const [todos, setTodos] = useState([]);
   const [showUnchecked, setShowUnchecked] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
