@@ -56,7 +56,7 @@ def get_todo(id: UUID):
 def post_todo(todo: TodoItem) -> dict:
     todos[todo.id] = todo
     return {
-        "data": { "Todo added." }
+        "message": "Todo added." 
     }
 
 # - updates todo
