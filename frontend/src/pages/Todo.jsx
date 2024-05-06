@@ -7,6 +7,7 @@ import axios from "axios";
 function Todo() {
   const [todos, setTodos] = useState([]);
   const [showUnchecked, setShowUnchecked] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     // Function to fetch todos
@@ -20,7 +21,8 @@ function Todo() {
     };
   
     fetchTodos();
-  }, []);
+    setRefresh(false);
+  }, [refresh]);
 
   function addTodo(title) {
     const newTodo = {
@@ -29,51 +31,66 @@ function Todo() {
       completed: false,
     };
 
-    setTodos((currentTodos) => [...currentTodos, newTodo]);
+    // setTodos((currentTodos) => [...currentTodos, newTodo]);
 
     axios.post("http://localhost:8000/todos/new", newTodo).catch((error) => {
       console.error("There was an error adding the todo: ", error);
+    })
+    .catch((error) => {
+      console.error("there was an error deleting the todo", error);
     });
+
+    setRefresh(true);
   }
 
   function toggleTodo(id, completed) {
     axios
-      .put(`http://localhost:8000/todos/edit/${id}`, {completed})
-      .then(() => {
-        setTodos((currentTodos) => 
-          currentTodos.map((todo) => {
-            if(todo.id === id) {
-              return {...todo, completed};
-            }
-            return todo;
-          }))
-      })
+      .put(`http://localhost:8000/todos/toggle/${id}`)
+      // .then(() => {
+        // setTodos((currentTodos) => 
+          // currentTodos.map((todo) => {
+          //   if(todo.id === id) {
+          //     return {...todo, completed};
+          //   }
+          //   return todo;
+          // }))
+      // })
+      .catch((error) => {
+        console.error("there was an error deleting the todo", error);
+      });
+    setRefresh(true);
   }
 
   function deleteTodo(id) {
     axios
       .delete(`http://localhost:8000/todos/delete/${id}`)
-      .then(() => {
-        setTodos((currentTodos) =>
-          currentTodos.filter((todo) => todo.id !== id)
-          );
-      })
+      // .then(() => {
+      //   setTodos((currentTodos) =>
+      //     currentTodos.filter((todo) => todo.id !== id)
+      //     );
+      // })
       .catch((error) => {
         console.error("there was an error deleting the todo", error);
       });
+    setRefresh(true);
   }
 
   function editTodo(id, title) {
     if(title === "") return;
-    setTodos((currentTodos) => {
-      return currentTodos.map((todo) => {
-        if(todo.id === id) {
-          return { ...todo, title };
-        }
-
-        return todo;
-      })
+    axios.put(`http://localhost:8000/todos/edit/${id}`, {title})
+    .catch((error) => {
+      console.error("there was an error editing the todo", error)
     })
+    // setTodos((currentTodos) => {
+    //   return currentTodos.map((todo) => {
+    //     if(todo.id === id) {
+    //       return { ...todo, title };
+    //     }
+
+    //     return todo;
+    //   })
+    // })
+    setRefresh(true);
   }
 
   function toggleUnchecked() {

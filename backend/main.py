@@ -29,6 +29,9 @@ class UpdateTodo(BaseModel):
     id: Optional[UUID] = None
     title: Optional[str] = None
     completed: Optional[bool] = None
+
+class Title(BaseModel):
+    title: Optional[str] = None
     
 # EMPTY STRING
 todos = {}
@@ -58,16 +61,23 @@ def post_todo(todo: TodoItem) -> dict:
 
 # - updates todo
 @app.put("/todos/edit/{id}")
-async def update_todo(id: UUID, todo: UpdateTodo):
+def update_todo(id: UUID, title: Title):
     if id not in todos:
         return {'error':'ID not found'}
 
-    if todo.title != None:
-        todos[id].title = todo.title
-    if todo.completed != None:
-        todos[id].completed = todo.completed
+    if title.title:
+        todos[id].title = title.title
+    # if todo.completed != None:
+    #     todos[id].completed = todo.completed
     
     return todos[id]
+
+@app.put("/todos/toggle/{id}")
+def toggle_todo(id: UUID):
+    if id not in todos:
+        return {"error" : "ID not found"}
+    
+    todos[id].completed = not todos[id].completed
 
 # - removes an existing todo
 @app.delete("/todos/delete/{id}")
@@ -75,4 +85,4 @@ async def delete_todo(id: UUID):
     if id not in todos:
         return {"error":"ID not found"}
     del todos[id]
-    return {"msg":"todo has been deleted successfully"}
+    return {"message":"todo has been deleted successfully"}
