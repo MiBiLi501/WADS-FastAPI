@@ -67,8 +67,6 @@ def update_todo(id: UUID, title: Title):
 
     if title.title:
         todos[id].title = title.title
-    # if todo.completed != None:
-    #     todos[id].completed = todo.completed
     
     return todos[id]
 

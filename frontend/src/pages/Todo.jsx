@@ -5,7 +5,6 @@ import { TodoList } from "../components/TodoList";
 import axios from "axios";
 
 function Todo() {
-  const [todos, setTodos] = useState([]);
   const [showUnchecked, setShowUnchecked] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
@@ -31,8 +30,6 @@ function Todo() {
       completed: false,
     };
 
-    // setTodos((currentTodos) => [...currentTodos, newTodo]);
-
     axios.post("http://localhost:8000/todos/new", newTodo).catch((error) => {
       console.error("There was an error adding the todo: ", error);
     })
@@ -43,35 +40,20 @@ function Todo() {
     setRefresh(true);
   }
 
-  function toggleTodo(id, completed) {
-    axios
-      .put(`http://localhost:8000/todos/toggle/${id}`)
-      // .then(() => {
-        // setTodos((currentTodos) => 
-          // currentTodos.map((todo) => {
-          //   if(todo.id === id) {
-          //     return {...todo, completed};
-          //   }
-          //   return todo;
-          // }))
-      // })
-      .catch((error) => {
+  function toggleTodo(id) {
+    axios.put(`http://localhost:8000/todos/toggle/${id}`)
+    .catch((error) => {
         console.error("there was an error deleting the todo", error);
       });
     setRefresh(true);
   }
 
   function deleteTodo(id) {
-    axios
-      .delete(`http://localhost:8000/todos/delete/${id}`)
-      // .then(() => {
-      //   setTodos((currentTodos) =>
-      //     currentTodos.filter((todo) => todo.id !== id)
-      //     );
-      // })
-      .catch((error) => {
+    axios.delete(`http://localhost:8000/todos/delete/${id}`)
+    .catch((error) => {
         console.error("there was an error deleting the todo", error);
       });
+    
     setRefresh(true);
   }
 
@@ -81,15 +63,7 @@ function Todo() {
     .catch((error) => {
       console.error("there was an error editing the todo", error)
     })
-    // setTodos((currentTodos) => {
-    //   return currentTodos.map((todo) => {
-    //     if(todo.id === id) {
-    //       return { ...todo, title };
-    //     }
 
-    //     return todo;
-    //   })
-    // })
     setRefresh(true);
   }
 
