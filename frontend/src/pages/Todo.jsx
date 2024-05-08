@@ -21,19 +21,18 @@ function Todo() {
     };
   
     fetchTodos();
+    console.log("Data updated")
     setRefresh(false);
   }, [refresh]);
 
-  function addTodo(title) {
+  async function addTodo(title) {
     const newTodo = {
-      id: crypto.randomUUID(), // Generate a UUID for the new todo item
+      // id: crypto.randomUUID(), // Generate a UUID for the new todo item
       title,
       completed: false,
     };
 
-    axios.post("http://localhost:8000/todos/new", newTodo).catch((error) => {
-      console.error("There was an error adding the todo: ", error);
-    })
+    await axios.post("http://localhost:8000/todos/new", newTodo)
     .catch((error) => {
       console.error("there was an error deleting the todo", error);
     });
@@ -41,16 +40,16 @@ function Todo() {
     setRefresh(true);
   }
 
-  function toggleTodo(id) {
-    axios.put(`http://localhost:8000/todos/toggle/${id}`)
+  async function toggleTodo(id) {
+    await axios.patch(`http://localhost:8000/todos/toggle/${id}`)
     .catch((error) => {
         console.error("there was an error deleting the todo", error);
       });
     setRefresh(true);
   }
 
-  function deleteTodo(id) {
-    axios.delete(`http://localhost:8000/todos/delete/${id}`)
+  async function deleteTodo(id) {
+    await axios.delete(`http://localhost:8000/todos/delete/${id}`)
     .catch((error) => {
         console.error("there was an error deleting the todo", error);
       });
@@ -58,9 +57,9 @@ function Todo() {
     setRefresh(true);
   }
 
-  function editTodo(id, title) {
+  async function editTodo(id, title) {
     if(title === "") return;
-    axios.put(`http://localhost:8000/todos/edit/${id}`, {title})
+    await axios.patch(`http://localhost:8000/todos/edit/${id}`, {title})
     .catch((error) => {
       console.error("there was an error editing the todo", error)
     })
